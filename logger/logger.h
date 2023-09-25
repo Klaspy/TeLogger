@@ -32,7 +32,7 @@ public:
     void setLogLevel(const int &level);
 
 public slots:
-    void log(QString message, QtMsgType type);
+    void log(QString message, QtMsgType type, QString category);
 
 signals:
     void logWritten(QString logMsg);

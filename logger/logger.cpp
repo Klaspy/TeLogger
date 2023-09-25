@@ -87,11 +87,19 @@ void Logger::setLogLevel(const int &level)
     logLevel_ = level;
 }
 
-void Logger::log(QString message, QtMsgType type)
+void Logger::log(QString message, QtMsgType type, QString category)
 {
     if (!dirCreated_)
     {
         setLogDir(logsDir_);
+    }
+    if (category == "default")
+    {
+        category = QCoreApplication::applicationName() + "_";
+    }
+    else if (category != "")
+    {
+        category += "_";
     }
 
     const QString curLogPath {(logsDir_ + "/" + logsName_).arg(QDate::currentDate().toString("dd.MM.yyyy"))};
@@ -200,7 +208,8 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, c
 
     QMetaObject::invokeMethod(&Logger::instance(), "log", Qt::QueuedConnection,
                               Q_ARG(QString, logStr),
-                              Q_ARG(QtMsgType, type));
+                              Q_ARG(QtMsgType, type),
+                              Q_ARG(QString, context.category));
 
     // QString {context.function}.split('(').first().split(' ').last()
     // Убираем список аргументов и убираем тип возвращаемого значения

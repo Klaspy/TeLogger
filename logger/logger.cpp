@@ -208,12 +208,12 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, c
 
 void Logger::readConfigs()
 {
-    QSettings conf {qApp->applicationDirPath() + "/../log.ini", QSettings::IniFormat};
+    QSettings conf {qApp->applicationDirPath() + "/log.ini", QSettings::IniFormat};
     qInfo().noquote() << "Путь к конфигу логгера:" << conf.fileName();
 
     if (!conf.contains("LOGGER/debug"))        conf.setValue("LOGGER/debug",    false);
     if (!conf.contains("LOGGER/lifetime"))     conf.setValue("LOGGER/lifetime", 30);
-    if (!conf.contains("LOGGER/dir"))          conf.setValue("LOGGER/dir",      QCoreApplication::applicationDirPath() + "/../Logs/");
+    if (!conf.contains("LOGGER/dir"))          conf.setValue("LOGGER/dir",      QCoreApplication::applicationDirPath() + "/Logs/");
     if (!conf.contains("LOGGER/name_pattern")) conf.setValue("LOGGER/name_pattern", "log_%1.log");
 
     setLogLevel(conf.value("LOGGER/debug").toBool() ? 0 : 1);

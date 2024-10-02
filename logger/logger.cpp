@@ -231,7 +231,3 @@ void Logger::readConfigs()
     setLogsLifeTime(conf.value("LOGGER/lifetime").toInt());
     setIsDebugEnabled(conf.value("LOGGER/debug"));
 }
-
-
-
-

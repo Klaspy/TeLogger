@@ -31,6 +31,9 @@ public:
     void setLogsLifeTime(const int &days);
     void setLogLevel(const int &level);
 
+    bool isDebugEnabled() const;
+    void setIsDebugEnabled(bool newIsDebugEnabled);
+
 public slots:
     void log(QString message, QtMsgType type);
 
@@ -51,6 +54,7 @@ private:
 
     int logsLifeTime_;
     int logLevel_;
+    bool isDebugEnabled_;
 
     bool dirCreated_;
 

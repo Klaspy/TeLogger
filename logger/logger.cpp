@@ -6,7 +6,8 @@ Logger::Logger() :
     logsName_       {"log_%1.log"},
     logsLifeTime_   {30},
     logLevel_       {0},
-    dirCreated_     {false}
+    dirCreated_     {false},
+    isDebugEnabled_ {true}
 {
     qRegisterMetaType<QtMsgType>("QtMsgType");
 
@@ -18,6 +19,16 @@ Logger::Logger() :
     thread->start();
 
     qInstallMessageHandler(Logger::messageHandler);
+}
+
+bool Logger::isDebugEnabled() const
+{
+    return isDebugEnabled_;
+}
+
+void Logger::setIsDebugEnabled(bool newIsDebugEnabled)
+{
+    isDebugEnabled_ = newIsDebugEnabled;
 }
 
 Logger& Logger::instance()
@@ -167,7 +178,8 @@ void Logger::log(QString message, QtMsgType type)
     fStream.flush();
     stdStream.flush();
 
-    if (!(logLevel_ != 0 && type == QtMsgType::QtDebugMsg))
+    if ((type == QtMsgType::QtDebugMsg && isDebugEnabled_) ||
+        (type != QtMsgType::QtDebugMsg))
     {
         logFile.write(logStr.toUtf8());
         logFile.flush();
@@ -208,18 +220,16 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, c
 
 void Logger::readConfigs()
 {
-    QSettings conf {qApp->applicationDirPath() + "/log.ini", QSettings::IniFormat};
+    QSettings conf {qApp->applicationDirPath() + "/settings.ini", QSettings::IniFormat};
     qInfo().noquote() << "Путь к конфигу логгера:" << conf.fileName();
 
-    if (!conf.contains("LOGGER/debug"))        conf.setValue("LOGGER/debug",    false);
-    if (!conf.contains("LOGGER/lifetime"))     conf.setValue("LOGGER/lifetime", 30);
-    if (!conf.contains("LOGGER/dir"))          conf.setValue("LOGGER/dir",      QCoreApplication::applicationDirPath() + "/Logs/");
-    if (!conf.contains("LOGGER/name_pattern")) conf.setValue("LOGGER/name_pattern", "log_%1.log");
+    if (!conf.contains("LOGGER/debug"))     conf.setValue("LOGGER/debug"    , true);
+    if (!conf.contains("LOGGER/lifetime"))  conf.setValue("LOGGER/lifetime" , 30);
+    if (!conf.contains("LOGGER/log_level")) conf.setValue("LOGGER/log_level", 0);
 
-    setLogLevel(conf.value("LOGGER/debug").toBool() ? 0 : 1);
-    setLogDir(conf.value("LOGGER/dir").toString());
+    setLogLevel(conf.value("LOGGER/log_level").toInt());
     setLogsLifeTime(conf.value("LOGGER/lifetime").toInt());
-    setLogFileNamePattern(conf.value("LOGGER/name_pattern").toString());
+    setIsDebugEnabled(conf.value("LOGGER/debug"));
 }
 
 

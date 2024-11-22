@@ -229,5 +229,5 @@ void Logger::readConfigs()
 
     setLogLevel(conf.value("LOGGER/log_level").toInt());
     setLogsLifeTime(conf.value("LOGGER/lifetime").toInt());
-    setIsDebugEnabled(conf.value("LOGGER/debug"));
+    setIsDebugEnabled(conf.value("LOGGER/debug").toBool());
 }

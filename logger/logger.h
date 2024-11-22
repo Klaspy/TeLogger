@@ -54,9 +54,8 @@ private:
 
     int logsLifeTime_;
     int logLevel_;
-    bool isDebugEnabled_;
-
     bool dirCreated_;
+    bool isDebugEnabled_;
 
     static constexpr int MAX_FNAME_LEN = 30;
 };
